@@ -94,6 +94,7 @@ function SettingsPanel() {
                   <FormMessage />
                 </FormItem>
               )}
+              />
                <FormField
               control={form.control}
               name="searxngUrl"
