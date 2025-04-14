@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -27,6 +26,7 @@ import * as z from "zod";
 const settingsSchema = z.object({
   dataFetchingFrequency: z.string().describe("Time in seconds"),
   customScripts: z.string().optional(),
+  searxngUrl: z.string().url({ message: "Invalid URL format" }).describe("SearxNG URL"),
 });
 
 function SettingsPanel() {
@@ -35,11 +35,13 @@ function SettingsPanel() {
     defaultValues: {
       dataFetchingFrequency: "60",
       customScripts: "",
+      searxngUrl: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof settingsSchema>) {
     console.log(values);
+    // Implement save settings and news fetching logic here
   }
 
   return (
@@ -47,7 +49,7 @@ function SettingsPanel() {
       <CardHeader>
         <CardTitle>UI Settings Panel</CardTitle>
         <CardDescription>
-          Configure data fetching frequency and custom scripts.
+          Configure data fetching frequency, custom scripts, and news settings.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,6 +93,25 @@ function SettingsPanel() {
                   <FormMessage />
                 </FormItem>
               )}
+               <FormField
+              control={form.control}
+              name="searxngUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>SearxNG URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      placeholder="Enter SearxNG URL"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    The URL of your SearxNG instance.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             <Button type="submit">Save Settings</Button>
           </form>
@@ -101,4 +122,3 @@ function SettingsPanel() {
 }
 
 export default SettingsPanel;
-
