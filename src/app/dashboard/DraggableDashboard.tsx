@@ -21,6 +21,7 @@ import {
 } from 'recharts';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Label} from "@/components/ui/label";
+import {Slider} from "@/components/ui/slider"; // Import Slider
 
 interface DraggableDashboardProps {
   dashboardItems: string[];
