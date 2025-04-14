@@ -28,13 +28,25 @@ import {
 import {Slider} from "@/components/ui/slider";
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {List, BarChart3, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Settings, Shapes} from "lucide-react";
+import {List, BarChart3, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Settings, Shapes, Code} from "lucide-react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import dynamic from 'next/dynamic';
 import {toast} from "@/hooks/use-toast";
 import { getCurrentStaff } from '@/lib/auth';
 import {useSession} from "next-auth/react";
+import TickerBar from "@/components/modules/TickerBar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface StockDataPoint {
   date: string;
@@ -68,28 +80,6 @@ const DraggableDashboard = dynamic(() => import('./DraggableDashboard'), {
   ssr: false,
 });
 
-interface TickerBarProps {
-    ticker: string;
-    setTicker: (ticker: string) => void;
-    handleSentimentAnalysis: () => void;
-}
-
-const TickerBar: React.FC<TickerBarProps> = ({ ticker, setTicker, handleSentimentAnalysis }) => {
-    return (
-        <div className="flex items-center justify-start space-x-4 p-4 bg-muted rounded-md mb-4">
-            <Input
-                type="text"
-                placeholder="Enter stock ticker (e.g., AAPL)"
-                value={ticker}
-                onChange={(e) => setTicker(e.target.value)}
-                className="w-48"
-            />
-            <Button onClick={handleSentimentAnalysis}>Analyze Sentiment</Button>
-        </div>
-    );
-};
-
-
 const DashboardPage: React.FC = () => {
   const [ticker, setTicker] = useState<string>('AAPL');
   const [sentimentSummary, setSentimentSummary] = useState<string | null>(null);
@@ -106,8 +96,35 @@ const DashboardPage: React.FC = () => {
     'stockAnalysis',
     'dataVisualization',
     'customization',
-    'patterns'
+    'patterns',
+      'rssFeed'
   ]);
+  const [rssFeedUrl, setRssFeedUrl] = useState<string>('https://finance.yahoo.com/rss/topstories');
+  const [rssFeed, setRssFeed] = useState<any[]>([]);
+  const [widgetCode, setWidgetCode] = useState<string>('');
+  const [widgetType, setWidgetType] = useState<'horizontal' | 'vertical' | 'topExchanges' | 'depthGraph'>('horizontal');
+
+    useEffect(() => {
+        const fetchRssFeed = async () => {
+            try {
+                const response = await fetch(`/api/rss?url=${rssFeedUrl}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setRssFeed(data.items);
+            } catch (error: any) {
+                console.error('Error fetching RSS feed:', error);
+                toast({
+                    title: "RSS Feed Error",
+                    description: `Failed to fetch RSS feed: ${error.message}`,
+                    variant: "destructive",
+                });
+            }
+        };
+
+        fetchRssFeed();
+    }, [rssFeedUrl]);
 
   useEffect(() => {
     const fetchAndSetStockAnalysis = async () => {
@@ -245,6 +262,7 @@ const DashboardPage: React.FC = () => {
     {id: 'dataVisualization', name: 'Data Visualization', icon: AreaChartIcon},
     {id: 'customization', name: 'Customization', icon: Settings},
     {id: 'patterns', name: 'Patterns', icon: Shapes},
+      {id: 'rssFeed', name: 'RSS Feed', icon: List},
   ];
 
   const dummyPatterns = [
@@ -252,6 +270,28 @@ const DashboardPage: React.FC = () => {
     {id: 'pattern2', name: 'Bearish Engulfing'},
     {id: 'pattern3', name: 'Head and Shoulders'},
   ];
+
+  const generateWidgetCode = () => {
+        let code = '';
+        switch (widgetType) {
+            case 'horizontal':
+                code = `<iframe src="your-domain/widget/horizontal" width="600" height="100"></iframe>`;
+                break;
+            case 'vertical':
+                code = `<iframe src="your-domain/widget/vertical" width="300" height="400"></iframe>`;
+                break;
+            case 'topExchanges':
+                code = `<iframe src="your-domain/widget/top-exchanges" width="400" height="300"></iframe>`;
+                break;
+            case 'depthGraph':
+                code = `<iframe src="your-domain/widget/depth-graph?ticker=${ticker}" width="500" height="300"></iframe>`;
+                break;
+            default:
+                code = 'Invalid widget type selected.';
+                break;
+        }
+        setWidgetCode(code);
+    };
 
   return (
     <div className="flex h-full">
@@ -285,6 +325,58 @@ const DashboardPage: React.FC = () => {
                 ))}
               </AccordionContent>
             </AccordionItem>
+              <AccordionItem value="widgets">
+                  <AccordionTrigger>Widgets</AccordionTrigger>
+                  <AccordionContent>
+                      <Select onValueChange={(value) => setWidgetType(value as 'horizontal' | 'vertical' | 'topExchanges' | 'depthGraph')} defaultValue={widgetType}>
+                          <SelectTrigger className="w-[90%]">
+                              <SelectValue placeholder="Select Widget Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                              <SelectItem value="horizontal">Horizontal Ticker</SelectItem>
+                              <SelectItem value="vertical">Vertical Ticker</SelectItem>
+                              <SelectItem value="topExchanges">Top Exchanges</SelectItem>
+                              <SelectItem value="depthGraph">Depth Graph</SelectItem>
+                          </SelectContent>
+                      </Select>
+                      <Button className="mt-2 w-[90%]" onClick={generateWidgetCode}>Generate Widget Code</Button>
+                      {widgetCode && (
+                          <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                  <Button variant="outline" className="mt-2 w-[90%]">
+                                      View Widget Code
+                                  </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                      <AlertDialogTitle>Widget Embed Code</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                          Copy and paste this code into your website.
+                                      </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <div className="relative">
+                                      <textarea
+                                          readOnly
+                                          value={widgetCode}
+                                          className="w-full h-40 p-2 border rounded resize-none"
+                                      />
+                                      <Button
+                                          variant="secondary"
+                                          size="sm"
+                                          className="absolute top-2 right-2"
+                                          onClick={() => navigator.clipboard.writeText(widgetCode)}
+                                      >
+                                          Copy
+                                      </Button>
+                                  </div>
+                                  <AlertDialogFooter>
+                                      <AlertDialogCancel>Close</AlertDialogCancel>
+                                  </AlertDialogFooter>
+                              </AlertDialogContent>
+                          </AlertDialog>
+                      )}
+                  </AccordionContent>
+              </AccordionItem>
             <AccordionItem value="settings">
               <AccordionTrigger>Settings</AccordionTrigger>
               <AccordionContent>
@@ -297,6 +389,12 @@ const DashboardPage: React.FC = () => {
                   <Input type="text" value={endDate} onChange={(e) => setEndDate(e.target.value)}/>
                   <Label>Volume Threshold</Label>
                   <Input type="number" value={volumeThreshold} onChange={(e) => setVolumeThreshold(Number(e.target.value))}/>
+                    <Label>RSS Feed URL</Label>
+                    <Input
+                        type="text"
+                        value={rssFeedUrl}
+                        onChange={(e) => setRssFeedUrl(e.target.value)}
+                    />
                 </div>
               </AccordionContent>
             </AccordionItem>
@@ -326,6 +424,7 @@ const DashboardPage: React.FC = () => {
           handleSentimentAnalysis={handleSentimentAnalysis}
           stockAnalysis={stockAnalysis}
           handleStockDataAnalysis={handleStockDataAnalysis}
+            rssFeed={rssFeed}
         />
       </div>
     </div>
