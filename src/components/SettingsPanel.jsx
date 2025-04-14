@@ -30,10 +30,8 @@ const settingsSchema = z.object({
   searxngUrl: z.string().url({ message: "Invalid URL format" }).describe("SearxNG URL"),
 });
 
-interface SettingsPanelProps {}
-
-const SettingsPanel: React.FC<SettingsPanelProps> = () => {
-  const form = useForm<z.infer<typeof settingsSchema>>({
+function SettingsPanel() {
+  const form = useForm({
     resolver: zodResolver(settingsSchema),
     defaultValues: {
       dataFetchingFrequency: "60",
@@ -42,7 +40,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof settingsSchema>) {
+  function onSubmit(values) {
     console.log(values);
     // Implement save settings and news fetching logic here
   }
