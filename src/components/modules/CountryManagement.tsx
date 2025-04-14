@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {AddCountryForm} from "@/components/forms/AddCountryForm";
+import AddCountryForm from "@/components/forms/AddCountryForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -227,6 +227,5 @@ const EditCountryForm: React.FC<{
     </div>
   );
 };
-
 
 export default CountryManagement;

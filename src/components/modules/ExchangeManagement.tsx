@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {AddExchangeForm} from "@/components/forms/AddExchangeForm";
+import AddExchangeForm from "@/components/forms/AddExchangeForm";
 import {
   AlertDialog,
   AlertDialogAction,

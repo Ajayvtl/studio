@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {AddUserForm} from "@/components/forms/AddUserForm";
+import AddUserForm from "@/components/forms/AddUserForm";
 import {
   AlertDialog,
   AlertDialogAction,
