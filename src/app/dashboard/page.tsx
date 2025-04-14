@@ -293,6 +293,28 @@ const DashboardPage: React.FC = () => {
         setWidgetCode(code);
     };
 
+    const renderWidgetPreview = () => {
+        let previewContent;
+        switch (widgetType) {
+            case 'horizontal':
+                previewContent = <div style={{ width: '600px', height: '100px', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Horizontal Ticker</div>;
+                break;
+            case 'vertical':
+                previewContent = <div style={{ width: '300px', height: '400px', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Vertical Ticker</div>;
+                break;
+            case 'topExchanges':
+                previewContent = <div style={{ width: '400px', height: '300px', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Top Exchanges</div>;
+                break;
+            case 'depthGraph':
+                previewContent = <div style={{ width: '500px', height: '300px', backgroundColor: '#f0f0f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Depth Graph for {ticker}</div>;
+                break;
+            default:
+                previewContent = <div>Invalid widget type selected.</div>;
+                break;
+        }
+        return previewContent;
+    };
+
   return (
     <div className="flex h-full">
       {/* Sidebar for Charts and Patterns */}
@@ -339,6 +361,9 @@ const DashboardPage: React.FC = () => {
                               <SelectItem value="depthGraph">Depth Graph</SelectItem>
                           </SelectContent>
                       </Select>
+                      <div className="mt-2 w-[90%]">
+                          {renderWidgetPreview()}
+                      </div>
                       <Button className="mt-2 w-[90%]" onClick={generateWidgetCode}>Generate Widget Code</Button>
                       {widgetCode && (
                           <AlertDialog>
