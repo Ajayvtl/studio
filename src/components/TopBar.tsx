@@ -3,13 +3,11 @@
 import React, {useEffect, useState} from 'react';
 import {Button} from "@/components/ui/button";
 import {Sun, Moon} from "lucide-react";
-import {signOut, useSession} from "next-auth/react";
 import {getCurrentStaff} from "@/lib/auth";
 
 const TopBar: React.FC = () => {
   const [staffName, setStaffName] = useState<string | null>(null);
   const [staffRole, setStaffRole] = useState<string | null>(null);
-  const {data: session} = useSession();
 
     useEffect(() => {
         const fetchStaffData = async () => {
@@ -21,10 +19,10 @@ const TopBar: React.FC = () => {
         };
 
         fetchStaffData();
-    }, [session]);
+    }, []);
 
     const handleLogout = async () => {
-        await signOut({redirect: false});
+        // Await signOut({redirect: false});
         window.location.href = '/api/auth/signin';
     };
 
