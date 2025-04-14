@@ -23,7 +23,7 @@ import {
 } from 'recharts';
 import {Slider} from "@/components/ui/slider";
 import {Label} from "@/components/ui/label";
-import {useEffect} from "react";
+// Removed duplicate import
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 interface StockDataPoint {
