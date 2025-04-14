@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {Home, Settings} from "lucide-react";
+import {Home, Settings, Users, Globe, Building} from "lucide-react";
 import Link from "next/link";
 
 const SidebarNavigation: React.FC = () => {
@@ -31,10 +31,34 @@ const SidebarNavigation: React.FC = () => {
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <Link href="/admin">
+            <Link href="/admin/users">
+              <SidebarMenuButton>
+                <Users/>
+                <span>Users</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/admin/countries">
+              <SidebarMenuButton>
+                <Globe/>
+                <span>Countries</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/admin/exchanges">
+              <SidebarMenuButton>
+                <Building/>
+                <span>Exchanges</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link href="/admin/settings">
               <SidebarMenuButton>
                 <Settings/>
-                <span>Admin</span>
+                <span>Settings</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
@@ -51,3 +75,6 @@ const SidebarNavigation: React.FC = () => {
 };
 
 export default SidebarNavigation;
+
+
+    
