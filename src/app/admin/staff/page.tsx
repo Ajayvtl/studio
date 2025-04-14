@@ -1,15 +1,5 @@
-'use client';
+import StaffManagement from '@/components/modules/StaffManagement';
 
-import React from 'react';
-
-const StaffPage = () => {
-  return (
-    <div>
-      <h1>Staff Management</h1>
-      <p>Manage staff members here.</p>
-      {/* Add staff management content here */}
-    </div>
-  );
-};
-
-export default StaffPage;
+export default function StaffPage() {
+  return <StaffManagement />;
+}
