@@ -24,7 +24,7 @@ import {
 import {Slider} from "@/components/ui/slider";
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {ListBullet, BarChart3, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Settings} from "lucide-react";
+import {List, BarChart3, LineChart as LineChartIcon, AreaChart as AreaChartIcon, Settings} from "lucide-react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {DragDropContext, Droppable, Draggable} from 'react-beautiful-dnd';
@@ -190,7 +190,7 @@ const DashboardPage: React.FC = () => {
   };
 
   const availableCharts = [
-    {id: 'marketSentiment', name: 'Market Sentiment', icon: ListBullet},
+    {id: 'marketSentiment', name: 'Market Sentiment', icon: List},
     {id: 'stockAnalysis', name: 'Stock Analysis', icon: Settings},
     {id: 'dataVisualization', name: 'Data Visualization', icon: AreaChartIcon},
     {id: 'customization', name: 'Customization', icon: Settings},
