@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import {Edit, Trash, Block, CheckCircle} from "lucide-react";
+import {Edit, Trash, Blocks, CheckCircle} from "lucide-react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {toast} from "@/hooks/use-toast";
 
@@ -191,7 +191,7 @@ const ClientManagement: React.FC = () => {
                   >
                     {client.status === 'active' ? (
                       <>
-                        <Block className="h-4 w-4 mr-2"/>
+                        <Blocks className="h-4 w-4 mr-2"/>
                         Block
                       </>
                     ) : (
