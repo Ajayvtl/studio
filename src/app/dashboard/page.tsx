@@ -202,6 +202,11 @@ const DashboardPage: React.FC = () => {
     {id: 'pattern3', name: 'Head and Shoulders'},
   ];
 
+  const handlePatternClick = (patternId: string) => {
+    console.log(`Pattern ${patternId} clicked`);
+    // Implement your pattern click logic here
+  };
+
   return (
     <div className="flex h-full">
       {/* Sidebar for Charts and Patterns */}
@@ -223,7 +228,11 @@ const DashboardPage: React.FC = () => {
               <AccordionTrigger>Patterns</AccordionTrigger>
               <AccordionContent>
                 {dummyPatterns.map((pattern) => (
-                  <div key={pattern.id} className="flex items-center space-x-2 py-2">
+                  <div
+                    key={pattern.id}
+                    className="flex items-center space-x-2 py-2 cursor-pointer"
+                    onClick={() => handlePatternClick(pattern.id)}
+                  >
                     <span>{pattern.name}</span>
                   </div>
                 ))}
