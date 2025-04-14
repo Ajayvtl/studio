@@ -12,8 +12,28 @@ import {
 } from "@/components/ui/sidebar";
 import {Settings, Users, Globe, Building, Shapes, BarChart3, Home, UserPlus, ShieldCheck} from "lucide-react";
 import Link from "next/link";
+import {getCurrentStaff} from "@/lib/auth";
+import {redirect} from "next/navigation";
 
 const SidebarNavigation: React.FC = () => {
+  const [staff, setStaff] = React.useState(null);
+
+    React.useEffect(() => {
+        const fetchStaff = async () => {
+            const staffData = await getCurrentStaff();
+            setStaff(staffData);
+        };
+        fetchStaff();
+    }, []);
+
+    if (!staff) {
+        return <div>Loading...</div>;
+    }
+
+    const hasPermission = (module: string) => {
+        return staff.permissions && staff.permissions[module];
+    };
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -21,7 +41,7 @@ const SidebarNavigation: React.FC = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          <SidebarMenuItem>
+           <SidebarMenuItem>
             <Link href="/dashboard">
               <SidebarMenuButton>
                 <Home />
@@ -29,78 +49,96 @@ const SidebarNavigation: React.FC = () => {
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/users">
-              <SidebarMenuButton>
-                <Users/>
-                <span>Users</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/staff">
-              <SidebarMenuButton>
-                <UserPlus/>
-                <span>Staff</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/clients">
-              <SidebarMenuButton>
-                <Users/>
-                <span>Clients</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/countries">
-              <SidebarMenuButton>
-                <Globe/>
-                <span>Countries</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/exchanges">
-              <SidebarMenuButton>
-                <Building/>
-                <span>Exchanges</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-           <SidebarMenuItem>
-            <Link href="/admin/permissions">
-              <SidebarMenuButton>
-                <ShieldCheck/>
-                <span>Permissions</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <Link href="/admin/settings">
-              <SidebarMenuButton>
-                <Settings/>
-                <span>Settings</span>
-              </SidebarMenuButton>
-            </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-              <Link href="/patterns">
-                  <SidebarMenuButton>
-                      <Shapes />
-                      <span>Patterns</span>
-                  </SidebarMenuButton>
+          {hasPermission('users') && (
+            <SidebarMenuItem>
+              <Link href="/admin/users">
+                <SidebarMenuButton>
+                  <Users/>
+                  <span>Users</span>
+                </SidebarMenuButton>
               </Link>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('staff') && (
+            <SidebarMenuItem>
+              <Link href="/admin/staff">
+                <SidebarMenuButton>
+                  <UserPlus/>
+                  <span>Staff</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('clients') && (
+            <SidebarMenuItem>
+              <Link href="/admin/clients">
+                <SidebarMenuButton>
+                  <Users/>
+                  <span>Clients</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('countries') && (
+            <SidebarMenuItem>
+              <Link href="/admin/countries">
+                <SidebarMenuButton>
+                  <Globe/>
+                  <span>Countries</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('exchanges') && (
+            <SidebarMenuItem>
+              <Link href="/admin/exchanges">
+                <SidebarMenuButton>
+                  <Building/>
+                  <span>Exchanges</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+           {hasPermission('permissions') && (
+            <SidebarMenuItem>
+              <Link href="/admin/permissions">
+                <SidebarMenuButton>
+                  <ShieldCheck/>
+                  <span>Permissions</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('settings') && (
+            <SidebarMenuItem>
+              <Link href="/admin/settings">
+                <SidebarMenuButton>
+                  <Settings/>
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+          )}
+          {hasPermission('patterns') && (
+              <SidebarMenuItem>
+                  <Link href="/patterns">
+                      <SidebarMenuButton>
+                          <Shapes />
+                          <span>Patterns</span>
+                      </SidebarMenuButton>
+                  </Link>
+              </SidebarMenuItem>
+          )}
+          {hasPermission('charts') && (
+            <SidebarMenuItem>
               <Link href="/charts">
-                  <SidebarMenuButton>
-                      <BarChart3 />
-                      <span>Charts</span>
-                  </SidebarMenuButton>
+                <SidebarMenuButton>
+                  <BarChart3 />
+                  <span>Charts</span>
+                </SidebarMenuButton>
               </Link>
-          </SidebarMenuItem>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>

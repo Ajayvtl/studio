@@ -33,7 +33,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import dynamic from 'next/dynamic';
 import {toast} from "@/hooks/use-toast";
-import { getCurrentStaff } from '@/lib/auth';
+import {getCurrentStaff, getSession} from '@/lib/auth';
 import {useSession} from "next-auth/react";
 import TickerBar from "@/components/modules/TickerBar";
 import {
@@ -47,6 +47,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {redirect} from "next/navigation";
 
 interface StockDataPoint {
   date: string;
@@ -103,28 +104,41 @@ const DashboardPage: React.FC = () => {
   const [rssFeed, setRssFeed] = useState<any[]>([]);
   const [widgetCode, setWidgetCode] = useState<string>('');
   const [widgetType, setWidgetType] = useState<'horizontal' | 'vertical' | 'topExchanges' | 'depthGraph'>('horizontal');
+    const [availableCharts, setAvailableCharts] = useState([
+        {id: 'marketSentiment', name: 'Market Sentiment', icon: List, permission: 'marketSentiment'},
+        {id: 'stockAnalysis', name: 'Stock Analysis', icon: Settings, permission: 'stockAnalysis'},
+        {id: 'dataVisualization', name: 'Data Visualization', icon: AreaChartIcon, permission: 'dataVisualization'},
+        {id: 'customization', name: 'Customization', icon: Settings, permission: 'customization'},
+        {id: 'patterns', name: 'Patterns', icon: Shapes, permission: 'patterns'},
+        {id: 'rssFeed', name: 'RSS Feed', icon: List, permission: 'rssFeed'},
+    ]);
+  const dummyPatterns = [
+    {id: 'pattern1', name: 'Bullish Engulfing'},
+    {id: 'pattern2', name: 'Bearish Engulfing'},
+    {id: 'pattern3', name: 'Head and Shoulders'},
+  ];
 
-    useEffect(() => {
-        const fetchRssFeed = async () => {
-            try {
-                const response = await fetch(`/api/rss?url=${rssFeedUrl}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setRssFeed(data.items);
-            } catch (error: any) {
-                console.error('Error fetching RSS feed:', error);
-                toast({
-                    title: "RSS Feed Error",
-                    description: `Failed to fetch RSS feed: ${error.message}`,
-                    variant: "destructive",
-                });
-            }
-        };
+  useEffect(() => {
+    const fetchRssFeed = async () => {
+      try {
+        const response = await fetch(`/api/rss?url=${rssFeedUrl}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setRssFeed(data.items);
+      } catch (error: any) {
+        console.error('Error fetching RSS feed:', error);
+        toast({
+          title: "RSS Feed Error",
+          description: `Failed to fetch RSS feed: ${error.message}`,
+          variant: "destructive",
+        });
+      }
+    };
 
-        fetchRssFeed();
-    }, [rssFeedUrl]);
+    fetchRssFeed();
+  }, [rssFeedUrl]);
 
   useEffect(() => {
     const fetchAndSetStockAnalysis = async () => {
@@ -256,22 +270,7 @@ const DashboardPage: React.FC = () => {
     });
   };
 
-  const availableCharts = [
-    {id: 'marketSentiment', name: 'Market Sentiment', icon: List},
-    {id: 'stockAnalysis', name: 'Stock Analysis', icon: Settings},
-    {id: 'dataVisualization', name: 'Data Visualization', icon: AreaChartIcon},
-    {id: 'customization', name: 'Customization', icon: Settings},
-    {id: 'patterns', name: 'Patterns', icon: Shapes},
-      {id: 'rssFeed', name: 'RSS Feed', icon: List},
-  ];
-
-  const dummyPatterns = [
-    {id: 'pattern1', name: 'Bullish Engulfing'},
-    {id: 'pattern2', name: 'Bearish Engulfing'},
-    {id: 'pattern3', name: 'Head and Shoulders'},
-  ];
-
-  const generateWidgetCode = () => {
+    const generateWidgetCode = () => {
         let code = '';
         switch (widgetType) {
             case 'horizontal':
@@ -315,6 +314,32 @@ const DashboardPage: React.FC = () => {
         return previewContent;
     };
 
+  const getDashboardItems = async () => {
+        const session = await getSession();
+
+        if (!session?.user) {
+            redirect('/api/auth/signin');
+        }
+
+        const staff = await getCurrentStaff();
+        if (!staff) {
+            console.log('No staff found');
+            return [];
+        }
+
+        // Filter availableCharts based on staff permissions
+        const permittedCharts = availableCharts.filter(chart =>
+            staff.permissions && staff.permissions[chart.permission]
+        ).map(chart => chart.id);
+
+        // Set the dashboard items based on permitted charts
+        setDashboardItems(permittedCharts);
+    };
+
+    useEffect(() => {
+      getDashboardItems();
+    }, []);
+
   return (
     <div className="flex h-full">
       {/* Sidebar for Charts and Patterns */}
@@ -324,7 +349,7 @@ const DashboardPage: React.FC = () => {
             <AccordionItem value="charts">
               <AccordionTrigger>Charts</AccordionTrigger>
               <AccordionContent>
-                {availableCharts.map((chart) => (
+                {availableCharts.filter(chart => dashboardItems.includes(chart.id)).map((chart) => (
                   <div key={chart.id} className="flex items-center space-x-2 py-2">
                     {chart.icon && <chart.icon className="h-4 w-4"/>}
                     <span>{chart.name}</span>
