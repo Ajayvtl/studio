@@ -196,6 +196,12 @@ const DashboardPage: React.FC = () => {
     {id: 'customization', name: 'Customization', icon: Settings},
   ];
 
+  const dummyPatterns = [
+    {id: 'pattern1', name: 'Bullish Engulfing'},
+    {id: 'pattern2', name: 'Bearish Engulfing'},
+    {id: 'pattern3', name: 'Head and Shoulders'},
+  ];
+
   return (
     <div className="flex h-full">
       {/* Sidebar for Charts and Patterns */}
@@ -216,7 +222,11 @@ const DashboardPage: React.FC = () => {
             <AccordionItem value="patterns">
               <AccordionTrigger>Patterns</AccordionTrigger>
               <AccordionContent>
-                <div>No patterns available yet.</div>
+                {dummyPatterns.map((pattern) => (
+                  <div key={pattern.id} className="flex items-center space-x-2 py-2">
+                    <span>{pattern.name}</span>
+                  </div>
+                ))}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="settings">
