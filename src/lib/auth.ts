@@ -1,5 +1,5 @@
 import { NextApiRequest } from 'next';
-import { getServerSession } from "next-auth"
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 
 export async function getSession() {
