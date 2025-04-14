@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {Settings, Users, Globe, Building, Shapes, BarChart3, Home, UserPlus} from "lucide-react";
+import {Settings, Users, Globe, Building, Shapes, BarChart3, Home, UserPlus, ShieldCheck} from "lucide-react";
 import Link from "next/link";
 
 const SidebarNavigation: React.FC = () => {
@@ -66,6 +66,14 @@ const SidebarNavigation: React.FC = () => {
               <SidebarMenuButton>
                 <Building/>
                 <span>Exchanges</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+           <SidebarMenuItem>
+            <Link href="/admin/permissions">
+              <SidebarMenuButton>
+                <ShieldCheck/>
+                <span>Permissions</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
