@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
 import React, {useEffect, useState} from 'react';
 import {Button} from "@/components/ui/button";
 import {Sun, Moon} from "lucide-react";
-import {getCurrentStaff} from "@/lib/auth";
 import { signOut } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 
@@ -13,15 +12,10 @@ const TopBar: React.FC = () => {
     const { data: session } = useSession();
 
     useEffect(() => {
-        const fetchStaffData = async () => {
-            const staff = await getCurrentStaff();
-            if (staff) {
-                setStaffName(staff.name as string);
-                setStaffRole(staff.role as string);
+            if (session?.user) {
+                setStaffName(session.user.name as string);
+                setStaffRole(session.user.role as string);
             }
-        };
-
-        fetchStaffData();
     }, [session]);
 
     const handleLogout = async () => {
@@ -47,3 +41,4 @@ const TopBar: React.FC = () => {
 };
 
 export default TopBar;
+

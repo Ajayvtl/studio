@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import {NextAuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import {z} from 'zod';
-import {query} from '@/lib/db';
+import {query, endPool} from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
@@ -78,4 +78,3 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-

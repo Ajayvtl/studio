@@ -12,21 +12,20 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {Settings, Users, Globe, Building, Shapes, BarChart3, Home, UserPlus, ShieldCheck} from "lucide-react";
+import {Settings, Users, Globe, Building, Shapes, BarChart3, Home, UserPlus, ShieldCheck, List} from "lucide-react";
 import Link from "next/link";
-import {getCurrentStaff} from "@/lib/auth";
-import {redirect} from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const SidebarNavigation: React.FC = () => {
-  const [staff, setStaff] = React.useState(null);
+    const { data: session } = useSession();
+  const [staff, setStaff] = React.useState<any>(null);
 
     React.useEffect(() => {
         const fetchStaff = async () => {
-            const staffData = await getCurrentStaff();
-            setStaff(staffData);
+          setStaff(session?.user);
         };
         fetchStaff();
-    }, []);
+    }, [session]);
 
     if (!staff) {
         return <div>Loading...</div>;
@@ -141,6 +140,16 @@ const SidebarNavigation: React.FC = () => {
               </Link>
             </SidebarMenuItem>
           )}
+          {hasPermission('rssFeed') && (
+              <SidebarMenuItem>
+                  <Link href="/dashboard">
+                      <SidebarMenuButton>
+                          <List />
+                          <span>RSS Feed</span>
+                      </SidebarMenuButton>
+                  </Link>
+              </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter>
@@ -154,3 +163,4 @@ const SidebarNavigation: React.FC = () => {
 };
 
 export default SidebarNavigation;
+
