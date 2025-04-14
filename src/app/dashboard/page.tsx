@@ -33,6 +33,8 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import dynamic from 'next/dynamic';
 import {toast} from "@/hooks/use-toast";
+import { getCurrentStaff } from '@/lib/auth';
+import {useSession} from "next-auth/react";
 
 interface StockDataPoint {
   date: string;
@@ -65,6 +67,28 @@ const DashboardItem: React.FC<DashboardItemProps> = ({id, title, content}) => {
 const DraggableDashboard = dynamic(() => import('./DraggableDashboard'), {
   ssr: false,
 });
+
+interface TickerBarProps {
+    ticker: string;
+    setTicker: (ticker: string) => void;
+    handleSentimentAnalysis: () => void;
+}
+
+const TickerBar: React.FC<TickerBarProps> = ({ ticker, setTicker, handleSentimentAnalysis }) => {
+    return (
+        <div className="flex items-center justify-start space-x-4 p-4 bg-muted rounded-md mb-4">
+            <Input
+                type="text"
+                placeholder="Enter stock ticker (e.g., AAPL)"
+                value={ticker}
+                onChange={(e) => setTicker(e.target.value)}
+                className="w-48"
+            />
+            <Button onClick={handleSentimentAnalysis}>Analyze Sentiment</Button>
+        </div>
+    );
+};
+
 
 const DashboardPage: React.FC = () => {
   const [ticker, setTicker] = useState<string>('AAPL');
@@ -282,6 +306,7 @@ const DashboardPage: React.FC = () => {
 
       {/* Main Content: Draggable Dashboard */}
       <div className="flex-1 p-10">
+          <TickerBar ticker={ticker} setTicker={setTicker} handleSentimentAnalysis={handleSentimentAnalysis} />
         <DraggableDashboard
           dashboardItems={dashboardItems}
           setDashboardItems={setDashboardItems}
