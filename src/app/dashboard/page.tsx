@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {SummarizeMarketSentimentInput, summarizeMarketSentiment} from "@/ai/flows/summarize-market-sentiment";
 import {AnalyzeStockDataInput, analyzeStockData} from "@/ai/flows/analyze-stock-data";
