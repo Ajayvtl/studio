@@ -84,6 +84,7 @@ const DraggableDashboard: React.FC<DraggableDashboardProps> = ({
   sentimentSummary,
   handleSentimentAnalysis,
   stockAnalysis,
+  handleStockDataAnalysis,
     rssFeed
 }) => {
 
@@ -260,25 +261,25 @@ const DraggableDashboard: React.FC<DraggableDashboardProps> = ({
                             </DashboardItem>
                           );
                         case 'rssFeed':
-                                                return (
-                                                    <DashboardItem key="rssFeed" id="rssFeed" title="Market News">
-                                                        <div className="flex flex-col space-y-4">
-                                                            {rssFeed && rssFeed.length > 0 ? (
-                                                                rssFeed.map((item, index) => (
-                                                                    <div key={index} className="rounded-md border p-4">
-                                                                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:underline">
-                                                                            {item.title}
-                                                                        </a>
-                                                                        <p className="text-sm text-muted-foreground">{item.pubDate}</p>
-                                                                        <p>{item.contentSnippet}</p>
-                                                                    </div>
-                                                                ))
-                                                            ) : (
-                                                                <div>Loading RSS Feed...</div>
-                                                            )}
-                                                        </div>
-                                                    </DashboardItem>
-                                                );
+                            return (
+                                <DashboardItem key="rssFeed" id="rssFeed" title="Market News">
+                                    <div className="flex flex-col space-y-4">
+                                        {rssFeed && rssFeed.length > 0 ? (
+                                            rssFeed.map((item, index) => (
+                                                <div key={index} className="rounded-md border p-4">
+                                                    <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-lg font-semibold hover:underline">
+                                                        {item.title}
+                                                    </a>
+                                                    <p className="text-sm text-muted-foreground">{item.pubDate}</p>
+                                                    <p>{item.contentSnippet}</p>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div>Loading RSS Feed...</div>
+                                        )}
+                                    </div>
+                                </DashboardItem>
+                            );
                         default:
                           return null;
                       }
