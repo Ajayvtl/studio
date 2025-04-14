@@ -9,19 +9,19 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 24 7.7% 14.9%;
+    --background: 255 255 255;
+    --foreground: 0 0 0;
     --card: 0 0% 100%;
     --card-foreground: 24 7.7% 14.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 24 7.7% 14.9%;
-    --primary: 228.6 76.5% 19.2%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 220 14.3% 95.1%;
     --secondary-foreground: 24 7.7% 14.9%;
     --muted: 220 14.3% 95.1%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 166.7 51.8% 41.6%;
+    --accent: 25 90% 50%;
     --accent-foreground: 210 20% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
@@ -34,29 +34,29 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 24 7.7% 14.9%;
-    --foreground: 210 20% 98%;
+    --background: 0 0 0;
+    --foreground: 255 255 255;
     --card: 24 7.7% 14.9%;
     --card-foreground: 210 20% 98%;
     --popover: 24 7.7% 14.9%;
     --popover-foreground: 210 20% 98%;
     --primary: 210 20% 98%;
-    --primary-foreground: 228.6 76.5% 19.2%;
+    --primary-foreground: 0 0 0;
     --secondary: 24 7.1% 22.1%;
     --secondary-foreground: 210 20% 98%;
     --muted: 24 7.1% 22.1%;
     --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 210 20% 98%;
+    --accent: 15 50% 50%;
     --accent-foreground: 24 7.7% 14.9%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
@@ -87,4 +87,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
