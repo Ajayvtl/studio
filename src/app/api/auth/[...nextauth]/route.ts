@@ -1,18 +1,26 @@
 import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import {NextAuthOptions} from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    }),
+    // Removed Google Provider for testing
+    // Add other authentication providers here later (e.g., Credentials, Email, etc.)
   ],
   session: {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
+  // Added simple authentication for testing purposes.  Replace this with a real provider later
+  callbacks: {
+    async signIn({user, account, profile}) {
+      // Replace this with your actual user authentication logic (e.g., database check)
+      if (user.email === 'test@example.com') {
+        return true;
+      } else {
+        return false;
+      }
+    },
+  },
 };
 
 const handler = NextAuth(authOptions);

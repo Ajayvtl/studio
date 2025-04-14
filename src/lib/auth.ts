@@ -56,4 +56,3 @@ export async function verifyPermissions(module: string, permission: string) {
 
   return staff.permissions[module].includes(permission);
 }
-
