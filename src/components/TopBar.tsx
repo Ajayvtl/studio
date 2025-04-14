@@ -4,26 +4,28 @@ import React, {useEffect, useState} from 'react';
 import {Button} from "@/components/ui/button";
 import {Sun, Moon} from "lucide-react";
 import {getCurrentStaff} from "@/lib/auth";
+import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 const TopBar: React.FC = () => {
   const [staffName, setStaffName] = useState<string | null>(null);
   const [staffRole, setStaffRole] = useState<string | null>(null);
+    const { data: session } = useSession();
 
     useEffect(() => {
         const fetchStaffData = async () => {
             const staff = await getCurrentStaff();
             if (staff) {
-                setStaffName(staff.name);
-                setStaffRole(staff.role);
+                setStaffName(staff.name as string);
+                setStaffRole(staff.role as string);
             }
         };
 
         fetchStaffData();
-    }, []);
+    }, [session]);
 
     const handleLogout = async () => {
-        // Await signOut({redirect: false});
-        window.location.href = '/api/auth/signin';
+        await signOut({redirect: true, callbackUrl: '/signin'});
     };
 
   return (

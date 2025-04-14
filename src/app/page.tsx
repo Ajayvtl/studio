@@ -1,5 +1,14 @@
-import { redirect } from 'next/navigation';
+'use server';
 
-export default function Home() {
+import { redirect } from 'next/navigation';
+import { getSession } from "@/lib/auth";
+
+export default async function Home() {
+  const session = await getSession();
+
+  if (!session?.user) {
+    redirect('/signin');
+  }
+
   redirect('/dashboard');
 }
