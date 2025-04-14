@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {SummarizeMarketSentimentInput, summarizeMarketSentiment} from "@/ai/flows/summarize-market-sentiment";
 import {AnalyzeStockDataInput, analyzeStockData} from "@/ai/flows/analyze-stock-data";
@@ -15,10 +15,16 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  Legend,
 } from 'recharts';
 import {Slider} from "@/components/ui/slider";
 import {Label} from "@/components/ui/label";
 import {useEffect} from "react";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 interface StockDataPoint {
   date: string;
@@ -39,6 +45,7 @@ const DashboardPage: React.FC = () => {
   const [dataFetchProgress, setDataFetchProgress] = useState<number>(0);
   const [chartZoom, setChartZoom] = useState<[number, number]>([0, 99]);
   const [volumeThreshold, setVolumeThreshold] = useState<number>(500000);
+  const [chartType, setChartType] = useState<'area' | 'line' | 'bar'>('line');
 
   useEffect(() => {
     const fetchAndSetStockAnalysis = async () => {
@@ -220,15 +227,52 @@ const DashboardPage: React.FC = () => {
               <CardDescription>Visualize historical stock data with interactive charts.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <Select value={chartType} onValueChange={setChartType}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select chart type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="line">Line Chart</SelectItem>
+                    <SelectItem value="area">Area Chart</SelectItem>
+                    <SelectItem value="bar">Bar Chart</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="w-full h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={zoomedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="close" stroke="#8884d8" fill="#8884d8" />
-                  </AreaChart>
+                  {chartType === 'line' && (
+                    <LineChart data={zoomedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="close" stroke="#8884d8" name="Close Price" />
+                      <Line type="monotone" dataKey="open" stroke="#82ca9d" name="Open Price" />
+                    </LineChart>
+                  )}
+                  {chartType === 'area' && (
+                    <AreaChart data={zoomedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Area type="monotone" dataKey="close" stroke="#8884d8" fill="#8884d8" name="Close Price" />
+                    </AreaChart>
+                  )}
+                  {chartType === 'bar' && (
+                    <BarChart data={zoomedData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="close" fill="#8884d8" name="Close Price" />
+                      <Bar dataKey="open" fill="#82ca9d" name="Open Price" />
+                    </BarChart>
+                  )}
                 </ResponsiveContainer>
               </div>
               <div className="flex flex-col space-y-2">
