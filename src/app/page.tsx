@@ -1,14 +1,25 @@
-'use server';
+'use client';
 
-import { redirect } from 'next/navigation';
-import { getSession } from "@/lib/auth";
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
-export default async function Home() {
-  const session = await getSession();
+export default function Home() {
+  const { status } = useSession();
+  const router = useRouter();
 
-  if (!session?.user) {
-    redirect('/signin');
-  }
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/signin');
+    } else if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
 
-  redirect('/dashboard');
+  return (
+    <div>
+      {/* You might want to show a loading indicator here */}
+      Loading...
+    </div>
+  );
 }
